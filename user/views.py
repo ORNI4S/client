@@ -69,8 +69,19 @@ class UserLogOut(LoginRequiredMixin ,View) :
         return redirect('user:profile')
     
 
+
+
 class UserProfile(LoginRequiredMixin , View) : 
+    def dispatch(self, request, *args, **kwargs)  :
+            if request.user.username == 'admin' : 
+                messages.success(request  , 'لطفا از اکانت ادمین خارج شوید و با اکانت کاربر معمولی امتحان کنید.' , 'warning')
+                return redirect('/admin')
+            return super().dispatch(request, *args, **kwargs)
+    
+
+
     def get(self , request) :
+        
         form = forms.get_gift()
         user = User.objects.get(id = request.user.id)
         days = user.userdata.subscription-datetime.datetime.now().date()
@@ -81,12 +92,14 @@ class UserProfile(LoginRequiredMixin , View) :
         else :
             sub = False
         return render(request , 'user/profile.html' , {'sub' : sub , 'day' : day , 'form' : form})
+    
+
+
     def post(self, request) : 
-
-
-
         form = forms.get_gift(request.POST )
         if form.is_valid() : 
+            print('DDDDDDDDDDDDDDDDDDDdd')
+            print(request.POST.get("form_type"))
             cd = form.cleaned_data
             check= md.Gift.objects.filter(code = cd['code'])
             if len(check) != 0 : 
@@ -115,52 +128,12 @@ class UserProfile(LoginRequiredMixin , View) :
                         models.GiftUser.objects.create(user = request.user , gift = gift)
 
                     else : 
-                        
                         messages.success(request  , 'کد وارد شده تکراری است .' , 'warning')
                 else :
                     messages.success(request  , 'کد وارد شده منقضی شده است .' , 'warning')
-                    
             else :
-
                 messages.success(request  , 'کد وارد شده اشتباه است .' , 'warning')
                 return redirect('user:profile')
 
-# class EditUserView(LoginRequiredMixin, View):
-# 	form_class = EditUserForm
-
-# 	def get(self, request):
-# 		form = self.form_class(instance=request.user.profile, initial={'email':request.user.email})
-# 		return render(request, 'account/edit_profile.html', {'form':form})
-
-# 	def post(self, request):
-# 		form = self.form_class(request.POST, instance=request.user.profile)
-# 		if form.is_valid():
-# 			form.save()
-# 			request.user.email = form.cleaned_data['email']
-# 			request.user.save()
-# 			messages.success(request, 'profile edited successfully', 'success')
-# 		return redirect('account:user_profile', request.user.id)
-
-
-
-#                     # user.userdata.subscription = datetime.datetime.now().date() + 
-
-
-                    
-
-                
-
-
-
-
-
-#             else : 
-#                 messages.success(request  , 'کد وارد شده نامعتبر است.' , 'warning')
-
-            # check = authenticate(request , username=cd['username'] , password =cd['password'] )
-            # if check is not None : 
-            #     login(request , check)
-            #     messages.success(request , 'با موفقیت وارد حساب کاربری شدید .' , 'success')
-            #     return redirect('user:profile')
             return redirect('user:profile')
         

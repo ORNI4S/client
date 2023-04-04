@@ -39,7 +39,7 @@ log in user
     
         <div id="collapseOne" class="collapse hide" aria-labelledby="headingOne" data-parent="#accordion">
           <div class="card-body">
-            <form class="form-inline"  method="post">
+            <form class="form-inline"  method="post" action="{% url 'user:profile'%}">
               <div class="form-group mb-2">
               </div>
               <div class="form-group mx-sm-3 mb-2">
@@ -55,14 +55,66 @@ log in user
 
 
 
+
+
+
+
+
+
+
+  <!-- #________________________________________________________________________________ -->
+
   <div class="card text-center m-4 mt-5">
     <div class="card-header">
       اکانت های من
     </div>
     <div class="card-body">
-      <h5 class="card-title">Special title treatment</h5>
-      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+
+
+
     </div>
+    <div id="accordion">
+      <div class="card">
+        <div class="card-header" id="headingOne">
+          <h5 class="mb-0">
+            <button class="btn btn-success" data-toggle="collapse" data-target="#collapseadd" aria-expanded="true" aria-controls="collapseOne">
+ + افزودن اکانت +
+            </button>
+          </h5>
+        </div>
+    
+        <div id="collapseadd" class="collapse hide" aria-labelledby="headingOne" data-parent="#accordion">
+          <div class="card-body">
+            <form class="form-inline"  method="post">
+              <div class="form-group mb-2">
+              </div>
+              <div class="form-group mx-sm-3 mb-2">
+                {{form.as_p}}
+                {%csrf_token%}
+              </div>
+              <button type="submit" class="btn btn-primary mb-2">تایید</button>
+            </form>          </div>
+        </div>
+      </div>
+      
+      
+      <div id="accordion">
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseAccount" aria-expanded="true" aria-controls="collapseOne">
+                Collapsible Group Item #1
+              </button>
+            </h5>
+          </div>
+      
+          <div id="collapseAccount" class="collapse hide" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+            </div>
+          </div>
+        </div>
+           </div>
 
   </div>
 

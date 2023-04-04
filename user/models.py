@@ -16,3 +16,13 @@ class UserData(models.Model) :
 class GiftUser(models.Model) : 
     gift = models.ForeignKey(md.Gift , on_delete=models.CASCADE)
     user = models.ForeignKey(User , on_delete=models.CASCADE)
+
+
+
+# class UserAccounts(models.Model) : 
+#     user = models.ForeignKey(User , on_delete=models.CASCADE)
+#     fpass = models.CharField(max_length=200 , default=None)
+#     second = models.PositiveIntegerField(default=180)
+
+
+

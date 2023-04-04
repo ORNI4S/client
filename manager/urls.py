@@ -6,5 +6,5 @@ from . import views
 app_name = 'manager'
 
 urlpatterns = [
-    # path('' , views.ManagerView.as_view() , name='manager')
+    path('' , views.ManagerView.as_view() , name='manager') , 
 ]

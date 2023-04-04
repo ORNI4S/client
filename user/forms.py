@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 class UserRegisterForm(forms.Form) : 
     username = forms.CharField(max_length=100)
     email = forms.CharField(max_length=100)
-    password = forms.CharField(max_length=100 , widget=forms.PasswordInput())
+    password = forms.CharField(max_length=100 , widget=forms.PasswordInput() )
     password2 = forms.CharField(max_length=100 , widget=forms.PasswordInput())
 
 
@@ -44,3 +44,8 @@ class UserLoginForm(forms.Form) :
 
 class get_gift(forms.Form) : 
     code = forms.CharField(max_length=200)
+
+
+class add_fpass(forms.Form) : 
+    fpass = forms.CharField(max_length=200)
+    second = forms.IntegerField(min_value=190)

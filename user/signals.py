@@ -8,7 +8,7 @@ import datetime
 
 
 @receiver(post_save  , sender = User )
-def add_trafic(sender  , **kwargs) : 
+def add_data(sender  , **kwargs) : 
     if kwargs['created'] : 
         day = datetime.datetime.now() - datetime.timedelta(1)
         models.UserData.objects.create(user = kwargs['instance'], subscription = day)

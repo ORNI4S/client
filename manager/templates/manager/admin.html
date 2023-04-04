@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+
+
+{% block title %}
+Admin
+{% endblock %}
+
+
+
+{% block main %}
+
+
+
+<!-- On rows -->
+<!-- On rows -->
+
+<table class="table text-center">
+    <caption>List of users</caption>
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">STATUS</th>
+        <th scope="col">LINK</th>
+      </tr>
+    </thead>
+
+    {% for i in servers %}
+    
+
+<tbody>
+    <tr class="table-success">
+      <th scope="row">{{i.id}}</th>
+      <td>ONLINE</td>
+      <td><a href="{{i.link}}">{{i.link}}</a></td>
+    </tr>
+  </tbody>
+{% endfor %}
+
+
+<br>
+
+<div class="text-center">
+
+    <a href="{% url 'manager:manager' %}" class="btn btn-info btn-lg text-center">
+        <span class="glyphicon glyphicon-refresh"></span> تازه سازی
+      </a>
+</div>
+<br><hr>
+
+
+
+
+
+{% endblock%}
