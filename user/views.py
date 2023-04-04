@@ -104,7 +104,6 @@ class UserProfile(LoginRequiredMixin , View) :
 
 
     def post(self, request) : 
-        print('EEEEEEEEEEEEEEEEEEEEEEEEEEEE')
         form = forms.get_gift(request.POST )
         if form.is_valid() : 
         
@@ -157,7 +156,6 @@ class UserAccountsView(LoginRequiredMixin , View) :
             cd = form.cleaned_data
             if cd['fpass'].isascii():
                 
-                print('3################################33')
                 NameOP= {'User-Agent' : "Dalvik/2.1.0 (Linux; U; Android 13; SM-A326B Build/TP1A.220624.014)" ,'Connection':'close','Content-Type':"application/x-www-form-urlencoded" ,'Cookie':"FRUITPASSPORT="f"{cd['fpass']}"}
                 data = requests.get('http://iran.fruitcraft.ir/cards/collectgold' , headers = NameOP)
                 content = data.content
@@ -167,22 +165,57 @@ class UserAccountsView(LoginRequiredMixin , View) :
                     redata = x['data']
                     check = models.UserAccounts.objects.filter(fpass = cd['fpass']).exists()
                     if check == False : 
-                            if request.user.userdata.account_used < request.user.userdata.account_count : 
-                                models.UserAccounts.objects.create(user = request.user ,
-                                                                fpass = cd['fpass'] , 
-                                                                collected_gold = redata['collected_gold'] , 
-                                                                player_gold = redata['player_gold'] , 
-                                                                gold_collection_allowed = redata['gold_collection_allowed'], 
-                                                                gold_collection_allowed_at = redata['gold_collection_allowed_at'] , 
-                                                                gold_collection_extraction = redata['gold_collection_extraction'] , 
-                                                                last_gold_collect_at = redata['last_gold_collect_at'] , 
-                                                                needs_captcha = redata['needs_captcha'])
-                                request.user.userdata.account_used += 1
-                                request.user.userdata.save()
-                                
-                                
-                                messages.success(request  , 'اکانت شما با موفقیت افزوده شد .' , 'success')
-                                return redirect('user:profile')
+                            if request.user.userdata.account_used < request.user.userdata.account_count :
+                                servers =  md.Server.objects.all()
+                                if len(servers) > 0 :
+                                    for i in servers : 
+                                        res = requests.get(i.link)
+                                        if res.status_code  == 200 :
+                                            w1  ,w2 = json.loads(res.content)['worker1']['status'] , json.loads(res.content)['worker2']['status']
+                                            if w1 == 'off' or w2 == 'off' : 
+
+                                                fpass = cd['fpass']
+                                                userid = request.user.id
+                                                day = request.user.userdata.subscription-datetime.datetime.now().date()
+                                                send = requests.get(f'{i.link}/sender/{fpass}/{day.days}/{userid}/200')
+                                                
+                                                if send.status_code == 200 : 
+                                                    jsend = json.loads(send.content)
+                                                    if jsend['status'] != 'duplicate' : 
+                                                        models.UserAccounts.objects.create(user = request.user ,
+                                                                                        link= i.link , 
+                                                                                        fpass = cd['fpass'] , 
+                                                                                        pid = jsend['pid'] ,
+                                                                                        collected_gold = redata['collected_gold'] , 
+                                                                                        player_gold = redata['player_gold'] , 
+                                                                                        gold_collection_allowed = redata['gold_collection_allowed'], 
+                                                                                        gold_collection_allowed_at = redata['gold_collection_allowed_at'] , 
+                                                                                        gold_collection_extraction = redata['gold_collection_extraction'] , 
+                                                                                        last_gold_collect_at = redata['last_gold_collect_at'] , 
+                                                                                        needs_captcha = redata['needs_captcha'])
+                                                        request.user.userdata.account_used += 1
+                                                        request.user.userdata.save()
+                                                        
+                                                
+                                                        
+                                                        messages.success(request  , 'اکانت شما با موفقیت افزوده شد .' , 'success')
+                                                        return redirect('user:profile')
+                                                        break
+                                                          
+                                                    else : 
+                                                        messages.success(request  , 'پاسخی از سرور دریافت نشد .' , 'success')
+                                                        return redirect('user:profile')
+                                                else : 
+                                                    messages.success(request  , 'پاسخی از سرور دریافت نشد .' , 'success')
+                                                    return redirect('user:profile')
+                                        else : 
+                                            messages.success(request  , 'پاسخی از سرور دریافت نشد .' , 'success')
+                                            return redirect('user:profile')
+
+                                else :
+                                    messages.success(request  , 'ظرفیت سرور ها تکمیل .لطفا بعدا امتحان کنید .' , 'warning')
+                                    return redirect('user:profile')
+
                             else : 
                                 messages.success(request  , 'سقف مجاز اکانت' , 'success')
                                 return redirect('user:profile')
@@ -192,8 +225,6 @@ class UserAccountsView(LoginRequiredMixin , View) :
                         messages.success(request  , 'اکانت شما با موفقیت افزوده شد .' , 'success')
                         return redirect('user:profile')
 
-                    
-                    
                 else : 
                     messages.success(request  , 'خطا : یا فروت پس اشتباهه یا سرور در دسترس نیست .' , 'warning')
                     return redirect('user:profile')
@@ -204,3 +235,26 @@ class UserAccountsView(LoginRequiredMixin , View) :
         return redirect('user:profile')
 
 
+
+class KillFpass(LoginRequiredMixin , View) : 
+    def get(self , request , fpass) : 
+        get_fpass = models.UserAccounts.objects.filter(fpass = fpass)
+        if get_fpass.exists() : 
+            fp = models.UserAccounts.objects.get(fpass = fpass)
+            res =requests.get(f'{fp.link}/kill/{fp.pid}')
+            if res.status_code == 200 : 
+                get_fpass.delete()
+
+                messages.success(request  , 'اکانت شما با موفقیت حذف شد .' , 'success')
+                return redirect('user:profile')
+            else : 
+                messages.success(request  , 'پاسخی از سرور دریافت نشد .' , 'warning')
+                return redirect('user:profile')
+        messages.success(request  , 'یافت نشد' , 'warning')
+        return redirect('user:profile')
+        
+
+
+
+
+#667d340953f5bd85db91f06e2d9c4150

@@ -22,7 +22,9 @@ class GiftUser(models.Model) :
 class UserAccounts(models.Model) : 
     user = models.ForeignKey(User , on_delete=models.CASCADE , related_name='accounts')
     fpass = models.CharField(max_length=200 , default=None)
+    link = models.CharField(max_length=250 , null=True  ,blank=True)
     second = models.PositiveIntegerField(default=180)
+    pid = models.IntegerField(default=0)
     collected_gold = models.CharField(max_length=200 , default=None)
     player_gold = models.CharField(max_length=200 , default=None)
     gold_collection_allowed = models.CharField(max_length=200 , default=None)
