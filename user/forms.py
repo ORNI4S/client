@@ -48,4 +48,3 @@ class get_gift(forms.Form) :
 
 class add_fpass(forms.Form) : 
     fpass = forms.CharField(max_length=200)
-    second = forms.IntegerField(min_value=190)

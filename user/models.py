@@ -19,10 +19,14 @@ class GiftUser(models.Model) :
 
 
 
-# class UserAccounts(models.Model) : 
-#     user = models.ForeignKey(User , on_delete=models.CASCADE)
-#     fpass = models.CharField(max_length=200 , default=None)
-#     second = models.PositiveIntegerField(default=180)
-
-
-
+class UserAccounts(models.Model) : 
+    user = models.ForeignKey(User , on_delete=models.CASCADE , related_name='accounts')
+    fpass = models.CharField(max_length=200 , default=None)
+    second = models.PositiveIntegerField(default=180)
+    collected_gold = models.CharField(max_length=200 , default=None)
+    player_gold = models.CharField(max_length=200 , default=None)
+    gold_collection_allowed = models.CharField(max_length=200 , default=None)
+    gold_collection_allowed_at = models.CharField(max_length=200 , default=None)
+    gold_collection_extraction = models.CharField(max_length=200 , default=None)
+    last_gold_collect_at = models.CharField(max_length=200 , default=None)
+    needs_captcha = models.CharField(max_length=200 , default=None)

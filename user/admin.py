@@ -13,7 +13,7 @@ class UserDataInline(admin.StackedInline) :
 class ExtendedUserAdmin(UserAdmin) : 
     inlines = (UserDataInline , )
 
-
+admin.site.register(models.UserAccounts)
 
 admin.site.register(models.GiftUser)
 

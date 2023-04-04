@@ -23,8 +23,8 @@ log in user
         {{date}}
       {% endif %}
       </h5>
-      <h5 class="card-title">اکانت های مجاز   : {{request.user.userdata.account_count}} روز</h5>
-      <h5 class="card-title">اکانت های ثبت شده  : {{request.user.userdata.account_used}} روز</h5>
+      <h5 class="card-title">اکانت های مجاز   : {{request.user.userdata.account_count}} </h5>
+      <h5 class="card-title">اکانت های ثبت شده  : {{request.user.userdata.account_used}} </h5>
       
     </div>
     <div id="accordion">
@@ -85,11 +85,11 @@ log in user
     
         <div id="collapseadd" class="collapse hide" aria-labelledby="headingOne" data-parent="#accordion">
           <div class="card-body">
-            <form class="form-inline"  method="post">
+            <form class="form-inline"  method="post" action="{% url 'manager:acc' %}">
               <div class="form-group mb-2">
               </div>
               <div class="form-group mx-sm-3 mb-2">
-                {{form.as_p}}
+                {{account_form.as_p}}
                 {%csrf_token%}
               </div>
               <button type="submit" class="btn btn-primary mb-2">تایید</button>
@@ -97,37 +97,55 @@ log in user
         </div>
       </div>
       
+
+
+      {% for i in useracc %}
       
       <div id="accordion">
         <div class="card">
           <div class="card-header" id="headingOne">
             <h5 class="mb-0">
               <button class="btn btn-link" data-toggle="collapse" data-target="#collapseAccount" aria-expanded="true" aria-controls="collapseOne">
-                Collapsible Group Item #1
+                {{ i.fpass }}
               </button>
             </h5>
           </div>
       
           <div id="collapseAccount" class="collapse hide" aria-labelledby="headingOne" data-parent="#accordion">
             <div class="card-body">
-              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+              <p>
+                second = {{i.second}}
+                <br>
+              collected_gold =  {{i.collected_gold}}
+              <br>
+
+              player_gold =  {{i.player_gold}}
+              <br>
+
+              gold_collection_allowed =  {{i.gold_collection_allowed}}
+              <br>
+
+              gold_collection_allowed_at =  {{i.gold_collection_allowed_at}}
+              <br>
+
+              gold_collection_extraction =  {{i.gold_collection_extraction}}
+              <br>
+
+              last_gold_collect_at =  {{i.last_gold_collect_at}}
+              <br>
+
+              needs_captcha =  {{i.needs_captcha}}
+              <br>
+
+              </p>
+          
             </div>
           </div>
         </div>
            </div>
 
   </div>
-
-
-
-
-
-
-
-
-
-
-
+  {% endfor %}
 
 
 {% endblock %}

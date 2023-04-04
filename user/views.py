@@ -5,9 +5,15 @@ from django.contrib.auth import login , logout , authenticate
 from . import forms
 from django.contrib import messages
 from . import models
+import requests
 from manager import models as md
 from django.contrib.auth.mixins import LoginRequiredMixin
 import datetime
+import json
+
+
+
+
 
 class UserRegister(View) : 
     form_class = forms.UserRegisterForm
@@ -83,6 +89,7 @@ class UserProfile(LoginRequiredMixin , View) :
     def get(self , request) :
         
         form = forms.get_gift()
+        account_form = forms.add_fpass()
         user = User.objects.get(id = request.user.id)
         days = user.userdata.subscription-datetime.datetime.now().date()
         day = days.days
@@ -91,15 +98,16 @@ class UserProfile(LoginRequiredMixin , View) :
             sub = True
         else :
             sub = False
-        return render(request , 'user/profile.html' , {'sub' : sub , 'day' : day , 'form' : form})
+        useracc = models.UserAccounts.objects.all()
+        return render(request , 'user/profile.html' , {'sub' : sub , 'day' : day , 'form' : form , 'account_form' : account_form , 'useracc' :useracc})
     
 
 
     def post(self, request) : 
+        print('EEEEEEEEEEEEEEEEEEEEEEEEEEEE')
         form = forms.get_gift(request.POST )
         if form.is_valid() : 
-            print('DDDDDDDDDDDDDDDDDDDdd')
-            print(request.POST.get("form_type"))
+        
             cd = form.cleaned_data
             check= md.Gift.objects.filter(code = cd['code'])
             if len(check) != 0 : 
@@ -134,6 +142,65 @@ class UserProfile(LoginRequiredMixin , View) :
             else :
                 messages.success(request  , 'کد وارد شده اشتباه است .' , 'warning')
                 return redirect('user:profile')
-
             return redirect('user:profile')
+        messages.success(request  , 'کد وارد شده اشتباه است .' , 'warning')
+        return redirect('user:profile')
         
+        
+
+
+
+class UserAccountsView(LoginRequiredMixin , View) : 
+    def post(self, request) : 
+        form = forms.add_fpass(request.POST)
+        if form.is_valid() : 
+            cd = form.cleaned_data
+            if cd['fpass'].isascii():
+                
+                print('3################################33')
+                NameOP= {'User-Agent' : "Dalvik/2.1.0 (Linux; U; Android 13; SM-A326B Build/TP1A.220624.014)" ,'Connection':'close','Content-Type':"application/x-www-form-urlencoded" ,'Cookie':"FRUITPASSPORT="f"{cd['fpass']}"}
+                data = requests.get('http://iran.fruitcraft.ir/cards/collectgold' , headers = NameOP)
+                content = data.content
+                print(content)
+                if len(content) < 500 : 
+                    x = json.loads(data.content)
+                    redata = x['data']
+                    check = models.UserAccounts.objects.filter(fpass = cd['fpass']).exists()
+                    if check == False : 
+                            if request.user.userdata.account_used < request.user.userdata.account_count : 
+                                models.UserAccounts.objects.create(user = request.user ,
+                                                                fpass = cd['fpass'] , 
+                                                                collected_gold = redata['collected_gold'] , 
+                                                                player_gold = redata['player_gold'] , 
+                                                                gold_collection_allowed = redata['gold_collection_allowed'], 
+                                                                gold_collection_allowed_at = redata['gold_collection_allowed_at'] , 
+                                                                gold_collection_extraction = redata['gold_collection_extraction'] , 
+                                                                last_gold_collect_at = redata['last_gold_collect_at'] , 
+                                                                needs_captcha = redata['needs_captcha'])
+                                request.user.userdata.account_used += 1
+                                request.user.userdata.save()
+                                
+                                
+                                messages.success(request  , 'اکانت شما با موفقیت افزوده شد .' , 'success')
+                                return redirect('user:profile')
+                            else : 
+                                messages.success(request  , 'سقف مجاز اکانت' , 'success')
+                                return redirect('user:profile')
+
+                    
+                    else : 
+                        messages.success(request  , 'اکانت شما با موفقیت افزوده شد .' , 'success')
+                        return redirect('user:profile')
+
+                    
+                    
+                else : 
+                    messages.success(request  , 'خطا : یا فروت پس اشتباهه یا سرور در دسترس نیست .' , 'warning')
+                    return redirect('user:profile')
+            else :
+                messages.success(request  ,'خطا :فروت پس اشتباهه' , 'warning')
+                return redirect('user:profile')
+
+        return redirect('user:profile')
+
+
