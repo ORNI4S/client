@@ -10,12 +10,11 @@ import requests
 
 
 
-ADMIN_USER = 'alireza'
-
 class ManagerView(LoginRequiredMixin ,View) : 
     def dispatch(self, request, *args, **kwargs)  :
+    
         if request.user.is_authenticated : 
-            if request.user.username != ADMIN_USER : 
+            if request.user.is_superuser == False : 
                 messages.success(request  , 'شما کاربر ادمین نیستی :(' , 'warning')
                 return redirect('user:profile')
         return super().dispatch(request, *args, **kwargs)

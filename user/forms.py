@@ -15,7 +15,7 @@ class UserRegisterForm(forms.Form) :
         username = self.cleaned_data['username']
         check = User.objects.filter(username=username).exists()
         if check : 
-            raise ValidationError('this user is alrady  , plase select another user name ')
+            raise ValidationError('این یوزر نیم وجود دارد .')
         return username
 
 
@@ -23,7 +23,7 @@ class UserRegisterForm(forms.Form) :
         email = self.cleaned_data['email']
         user = User.objects.filter(email=email).exists()
         if user:
-            raise ValidationError('this email already exists')
+            raise ValidationError('این ایمیل وجود دارد لطفا ایمیل دیگری استفاده کنید .')
         return email
 
     def clean(self) : 
@@ -33,7 +33,7 @@ class UserRegisterForm(forms.Form) :
 
 
         if p1 and p2 and p1 != p2 : 
-            raise ValidationError('password dos not mathch ...fuck you')
+            raise ValidationError('پسورد ها با هم برابر نیستن .لطفا دوباره تلاش کنید .')
         
 
 class UserLoginForm(forms.Form) : 

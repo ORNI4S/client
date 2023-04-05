@@ -21,7 +21,7 @@ class UserRegister(View) :
     def dispatch(self, request, *args, **kwargs)  :
         if request.user.is_authenticated : 
             messages.success(request  , 'ابتدا از حساب خارج شوید سپس دوباره امتحان کنید .' , 'warning')
-            return redirect('user:profile')
+            return redirect('user:login')
         return super().dispatch(request, *args, **kwargs)
 
     def get(self , request) : 
@@ -79,9 +79,9 @@ class UserLogOut(LoginRequiredMixin ,View) :
 
 class UserProfile(LoginRequiredMixin , View) : 
     def dispatch(self, request, *args, **kwargs)  :
-            if request.user.username == 'admin' : 
-                messages.success(request  , 'لطفا از اکانت ادمین خارج شوید و با اکانت کاربر معمولی امتحان کنید.' , 'warning')
-                return redirect('/admin')
+            if request.user.is_superuser: 
+                messages.success(request  , 'پنل مدیریت ادمین خوش اومدی :)' , 'success')
+                return redirect('/manager')
             return super().dispatch(request, *args, **kwargs)
     
 
@@ -98,8 +98,28 @@ class UserProfile(LoginRequiredMixin , View) :
             sub = True
         else :
             sub = False
-        useracc = models.UserAccounts.objects.all()
-        return render(request , 'user/profile.html' , {'sub' : sub , 'day' : day , 'form' : form , 'account_form' : account_form , 'useracc' :useracc})
+        useracc = models.UserAccounts.objects.filter(user = request.user.id)
+        if useracc.exists() : 
+            for i in useracc : 
+                NameOP= {'User-Agent' : "Dalvik/2.1.0 (Linux; U; Android 13; SM-A326B Build/TP1A.220624.014)" ,'Connection':'close','Content-Type':"application/x-www-form-urlencoded" ,'Cookie':"FRUITPASSPORT="f"{i.fpass}"}
+                data = requests.get('http://iran.fruitcraft.ir/cards/collectgold' , headers = NameOP)
+                content = data.content
+                if data.status_code == 200 and  len(content) < 500: 
+                    x = json.loads(data.content)
+                    redata = x['data']
+                    acc = models.UserAccounts.objects.get(id = i.id)
+                    acc.collected_gold = redata['collected_gold'] , 
+                    acc.player_gold = redata['player_gold'] , 
+                    acc.gold_collection_allowed = redata['gold_collection_allowed'], 
+                    acc.gold_collection_allowed_at = redata['gold_collection_allowed_at'] , 
+                    acc.gold_collection_extraction = redata['gold_collection_extraction'] , 
+                    acc.last_gold_collect_at = redata['last_gold_collect_at'] , 
+                    acc.needs_captcha = redata['needs_captcha']
+                    acc.save()
+        acc = models.UserAccounts.objects.filter(user = request.user.id)
+            
+
+        return render(request , 'user/profile.html' , {'sub' : sub , 'day' : day , 'form' : form , 'account_form' : account_form , 'useracc' :acc})
     
 
 
