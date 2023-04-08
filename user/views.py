@@ -81,7 +81,7 @@ class UserProfile(LoginRequiredMixin , View) :
     def dispatch(self, request, *args, **kwargs)  :
             if request.user.is_superuser: 
                 messages.success(request  , 'پنل مدیریت ادمین خوش اومدی :)' , 'success')
-                return redirect('/manager')
+                return redirect('manager:manager')
             return super().dispatch(request, *args, **kwargs)
     
 
@@ -264,7 +264,8 @@ class KillFpass(LoginRequiredMixin , View) :
             res =requests.get(f'{fp.link}/kill/{fp.pid}')
             if res.status_code == 200 : 
                 get_fpass.delete()
-
+                request.user.userdata.account_used -= 1
+                request.user.userdata.save()
                 messages.success(request  , 'اکانت شما با موفقیت حذف شد .' , 'success')
                 return redirect('user:profile')
             else : 

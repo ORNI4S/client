@@ -32,3 +32,8 @@ class UserAccounts(models.Model) :
     gold_collection_extraction = models.CharField(max_length=200 , default=None)
     last_gold_collect_at = models.CharField(max_length=200 , default=None)
     needs_captcha = models.CharField(max_length=200 , default=None)
+
+
+
+    def __str__(self) -> str:
+        return f'{self.user.username} - {self.fpass}'
