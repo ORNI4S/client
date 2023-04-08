@@ -98,6 +98,10 @@ class UserProfile(LoginRequiredMixin , View) :
             sub = True
         else :
             sub = False
+            user.userdata.account_count = 0
+            user.userdata.account_used = 0
+            user.userdata.save()
+            
         useracc = models.UserAccounts.objects.filter(user = request.user.id)
         if useracc.exists() : 
             for i in useracc : 
