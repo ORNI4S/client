@@ -112,13 +112,13 @@ class UserProfile(LoginRequiredMixin , View) :
                     x = json.loads(data.content)
                     redata = x['data']
                     acc = models.UserAccounts.objects.get(id = i.id)
-                    acc.collected_gold = redata['collected_gold'] , 
-                    acc.player_gold = redata['player_gold'] , 
-                    acc.gold_collection_allowed = redata['gold_collection_allowed'], 
-                    acc.gold_collection_allowed_at = redata['gold_collection_allowed_at'] , 
-                    acc.gold_collection_extraction = redata['gold_collection_extraction'] , 
-                    acc.last_gold_collect_at = redata['last_gold_collect_at'] , 
-                    acc.needs_captcha = redata['needs_captcha']
+                    acc.collected_gold = str(redata.get('collected_gold')) , 
+                    acc.player_gold = str(redata.get('player_gold')) , 
+                    acc.gold_collection_allowed = str(redata.get('gold_collection_allowed')), 
+                    acc.gold_collection_allowed_at = str(redata.get('gold_collection_allowed_at')) , 
+                    acc.gold_collection_extraction = str(redata.get('gold_collection_extraction')) , 
+                    acc.last_gold_collect_at = str(redata.get('last_gold_collect_at')) , 
+                    acc.needs_captcha = str(redata.get('needs_captcha')) , 
                     acc.save()
         acc = models.UserAccounts.objects.filter(user = request.user.id)
             
