@@ -178,6 +178,11 @@ class UserAccountsView(LoginRequiredMixin , View) :
         form = forms.add_fpass(request.POST)
         if form.is_valid() : 
             cd = form.cleaned_data
+            second= cd['second']
+            if second <180  : 
+                second = 180
+
+            print(second)
             if cd['fpass'].isascii():
                 
                 NameOP= {'User-Agent' : "Dalvik/2.1.0 (Linux; U; Android 13; SM-A326B Build/TP1A.220624.014)" ,'Connection':'close','Content-Type':"application/x-www-form-urlencoded" ,'Cookie':"FRUITPASSPORT="f"{cd['fpass']}"}
@@ -201,13 +206,14 @@ class UserAccountsView(LoginRequiredMixin , View) :
                                                 fpass = cd['fpass']
                                                 userid = request.user.id
                                                 day = request.user.userdata.subscription-datetime.datetime.now().date()
-                                                send = requests.get(f'{i.link}/sender/{fpass}/{day.days}/{userid}/200')
+                                                send = requests.get(f'{i.link}/sender/{fpass}/{day.days}/{userid}/{str(second)}')
                                                 
                                                 if send.status_code == 200 : 
                                                     jsend = json.loads(send.content)
                                                     if jsend['status'] != 'duplicate' : 
                                                         models.UserAccounts.objects.create(user = request.user ,
                                                                                         link= i.link , 
+                                                                                        second = second ,
                                                                                         fpass = cd['fpass'] , 
                                                                                         pid = jsend['pid'] ,
                                                                                         collected_gold = redata['collected_gold'] , 
