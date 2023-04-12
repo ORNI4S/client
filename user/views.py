@@ -193,6 +193,7 @@ class UserAccountsView(LoginRequiredMixin , View) :
                     x = json.loads(data.content)
                     redata = x['data']
                     check = models.UserAccounts.objects.filter(fpass = cd['fpass']).exists()
+            
                     if check == False : 
                             if request.user.userdata.account_used < request.user.userdata.account_count :
                                 servers =  md.Server.objects.all()
@@ -247,12 +248,12 @@ class UserAccountsView(LoginRequiredMixin , View) :
                                     return redirect('user:profile')
 
                             else : 
-                                messages.success(request  , 'سقف مجاز اکانت' , 'success')
+                                messages.success(request  , 'سقف مجاز اکانت' , 'warning')
                                 return redirect('user:profile')
 
                     
                     else : 
-                        messages.success(request  , 'اکانت شما با موفقیت افزوده شد .' , 'success')
+                        messages.success(request  ,  'خطا فروت پس تکراری' , 'warning')
                         return redirect('user:profile')
 
                 else : 

@@ -3,10 +3,32 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
 class UserRegisterForm(forms.Form) : 
-    username = forms.CharField(max_length=100)
-    email = forms.CharField(max_length=100)
-    password = forms.CharField(max_length=100 , widget=forms.PasswordInput() )
-    password2 = forms.CharField(max_length=100 , widget=forms.PasswordInput())
+    username = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class' : 'form-control' ,
+                                                                                   'placeholder' : 'یوزرنیم را وارد کنید'  , 
+                                                                                   'class' : 'col-xs-2' , 
+                                                                                   'class' : 'text-center'
+
+                                                                                   }) , label='')
+    email = forms.CharField(max_length=100, widget=forms.EmailInput(attrs={'class' : 'form-control' ,
+                                                                                   'placeholder' : 'ایمیل را وارد کنید'  , 
+                                                                                   'class' : 'col-xs-2' , 
+                                                                                   'class' : 'text-center'
+
+                                                                                   }) , label='')
+    
+
+    password = forms.CharField(max_length=100  , widget=forms.PasswordInput(attrs={'class' : 'form-control' ,
+                                                                                   'placeholder' : 'پسورد را وارد کنید'  , 
+                                                                                   'class' : 'col-xs-2' , 
+                                                                                   'class' : 'text-center' ,
+
+                                                                                   }) , label='')
+    password2 = forms.CharField(max_length=100 , widget=forms.PasswordInput(attrs={'class' : 'form-control' ,
+                                                                                   'placeholder' : 'تکرار پسورد را وارد کنید'  , 
+                                                                                   'class' : 'col-xs-2' , 
+                                                                                   'class' : 'text-center'
+
+                                                                                   }) , label='')
 
 
 
@@ -37,15 +59,49 @@ class UserRegisterForm(forms.Form) :
         
 
 class UserLoginForm(forms.Form) : 
-    username = forms.CharField(max_length=100)
-    password = forms.CharField(max_length=100 , widget=forms.PasswordInput())
+    username = forms.CharField(max_length=100  , widget=forms.TextInput(attrs={'class' : 'form-control' ,
+                                                                                   'placeholder' : 'یوزرنیم را وارد کنید'  , 
+                                                                                   'class' : 'col-xs-2' , 
+                                                                                   'class' : 'text-center'
+
+                                                                                   }) , label='')
+    password = forms.CharField(max_length=100 , widget=forms.PasswordInput(attrs={'class' : 'form-control' ,
+                                                                                   'placeholder' : 'پسورد را وارد کنید'  , 
+                                                                                   'class' : 'col-xs-2' , 
+                                                                                   'class' : 'text-center'
+
+                                                                                   }) , label='')
     
 
 
 class get_gift(forms.Form) : 
-    code = forms.CharField(max_length=200)
+    code = forms.CharField(max_length=200 , 
+                            widget=forms.TextInput(attrs={'class' : 'form-control' ,
+                                                                             'placeholder' : 'کد هدیه را وارد کنید ' , 
+                                                                             'class' : 'col-xs-2' , 
+                                                                             'class' : 'text-center'}) , label='')
 
 
 class add_fpass(forms.Form) : 
-    fpass = forms.CharField(max_length=200 )
-    second = forms.IntegerField()
+    fpass = forms.CharField(max_length=200  , widget=forms.TextInput(attrs={'class' : 'form-control' ,
+                                                                             'placeholder' : 'فروت پس را وارد کنید' , 
+                                                                             'class' : 'col-xs-2' , 
+                                                                             'class' : 'text-center'}) , label='')
+    
+
+    second = forms.IntegerField(widget=forms.TextInput(attrs={'class' : 'form-control' ,
+                                                                             'placeholder' : 'ثانیه را وارد کنید' , 
+                                                                             'class' : 'col-xs-1' , 
+                                                                             'class' : 'text-center' , 
+                                                                             'type' : 'number' , 
+                                                                             }) , label='')
+
+
+
+
+# username = forms.CharField(widget=forms.TextInput(
+#         attrs={
+#         'class':'form-control',
+#         'placeholder':'Username'
+#         }
+#     ))

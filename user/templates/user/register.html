@@ -11,9 +11,14 @@ log in user
 {% block main %}
 
 
-<form action="" method="post">
-    {{form.as_p}}
-    {% csrf_token %}
-    <input type="submit" class="btn btn-success" value="تایید">
-</form>
+<div class="text-center">
+
+
+    <h1 class="h3 mb-3 fw-normal">ثبت نام</h1>
+    <form action="" method="post">
+        {{form.as_p}}
+        {% csrf_token %}
+        <input type="submit" class=" w-30 btn btn-lg btn-primary" value="تایید">
+    </form>
+</div>
 {% endblock %}

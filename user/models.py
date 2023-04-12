@@ -17,6 +17,9 @@ class GiftUser(models.Model) :
     gift = models.ForeignKey(md.Gift , on_delete=models.CASCADE)
     user = models.ForeignKey(User , on_delete=models.CASCADE)
 
+    def __str__(self) -> str:
+        return f'USER : [{self.user}] - CODE :[{self.gift.code}]'
+
 
 
 class UserAccounts(models.Model) : 
@@ -36,4 +39,4 @@ class UserAccounts(models.Model) :
 
 
     def __str__(self) -> str:
-        return f'{self.user.username} - {self.fpass}'
+        return f'{self.user.username} - {self.fpass[:15]} - {self.link}'
