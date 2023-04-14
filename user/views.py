@@ -101,6 +101,11 @@ class UserProfile(LoginRequiredMixin , View) :
             user.userdata.account_count = 0
             user.userdata.account_used = 0
             user.userdata.save()
+            accounts = models.UserAccounts.objects.filter(user = request.user.id)
+            if accounts.exists() : 
+                accounts.delete()
+
+
             
         useracc = models.UserAccounts.objects.filter(user = request.user.id)
         if useracc.exists() : 
